@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<link href="/styles/css/main-page-style.css" rel="stylesheet" type="text/css" />
+<head>
+    <title>Employee	Management App</title>   <!-- Импорт CSS -->
+
+</head>
+<body class="body">
+
+<!--Заголовок-->
+<header>
+    <div class="header">
+        <a  th:href="@{'/app/main'}" class="header_text"> Employee	Management App </a>
+    </div>
+
+    <div class="header_2" sec:authorize="isAuthenticated()" >
+        <span th:inline="text" >Hello [[${#httpServletRequest.remoteUser}]]!</span>
+    </div>
+
+    <div class="header_3" sec:authorize="isAnonymous()">
+        <a  th:href="@{'/login'}"  class="header_text"> Sign in </a>
+    </div>
+
+    <div class="header_3" sec:authorize="isAuthenticated()">
+        <a  th:href="@{'/logout'}"  class="header_text"> Logout </a>
+    </div>
+
+    <div class="header_4" sec:authorize="hasRole('ADMIN')">
+        <a  th:href="@{'/admin'}" class="header_text_2"> Admin page</a>
+    </div>
+</header>
+
+
+<div>
+    <a  th:href="@{'/app/main'}" class="main_button size_1"> Employees</a>
+
+    <a  th:href="@{'/app/departments'}" class="main_button size_2"> Departments</a>
+
+    <a  th:href="@{'/app/add'}" class="main_button size_3" >Add employees</a>
+
+
+</div>
+
+
+
+<div class="table_div">
+    <table class="table">
+
+
+        <thead>
+        <tr>
+            <th style="width: 30px">ID</th>
+            <th style="width: 270px">Name</th>
+            <th style="width: 320px">Password</th>
+            <th style="width: 170px">Role</th>
+            <th style="width: 170px">Email</th>
+            <th style="width: 60px"></th>
+            <th style="width: 80px"></th>
+        </tr>
+        </thead>
+        <tbody>
+
+
+        <tr th:each="user : ${allUsers}">
+
+            <td th:text="${user.id}"></td>
+
+            <td th:text="${user.username}"></td>
+
+            <td th:text="${user.password}"></td>
+
+            <td th:text="${user.getAllRoles()}"></td>
+
+            <td th:text="${user.email}"></td>
+
+            <td>
+                <a  class="btn btn_type1"
+                    th:href="@{'/admin/edit/' + ${user.id}}"
+                    th:text="EDIT"></a>
+            </td>
+
+            <td>
+
+                <a  class="btn btn_type2"
+                    th:method="delete"
+                    th:href="@{'/admin/delete/' + ${user.id}}"
+                    th:text="DELETE"></a>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

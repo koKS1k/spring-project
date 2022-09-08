@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<link href="/styles/css/main-page-style.css" rel="stylesheet" type="text/css" />
+<head>
+    <title>Employee	Management App</title>
+
+</head>
+
+<body class="body">
+
+<!--Заголовок-->
+<header>
+    <div class="header">
+        <a  th:href="@{'/app/main'}" class="header_text"> Employee	Management App </a>
+    </div>
+
+    <div class="header_2" sec:authorize="isAuthenticated()" >
+        <span th:inline="text" >Hello [[${#httpServletRequest.remoteUser}]]!</span>
+    </div>
+
+    <div class="header_3" sec:authorize="isAnonymous()">
+        <a  th:href="@{'/login'}"  class="header_text"> Sign in </a>
+    </div>
+
+    <div class="header_3" sec:authorize="isAuthenticated()">
+        <a  th:href="@{'/logout'}"  class="header_text"> Logout </a>
+    </div>
+
+    <div class="header_4" sec:authorize="hasRole('ADMIN')">
+        <a  th:href="@{'/admin'}" class="header_text_2"> Admin page</a>
+    </div>
+</header>
+
+<!-- Блок с двумя ссылками, оформленными как кнопки-->
+<div>
+    <!--Ссылка на получение списка всех сотрудников-->
+    <a  th:href="@{'/app/main'}" class="main_button size_1" >Employees</a>
+    <!--Ссылка на получение списка всех отделов-->
+    <a  th:href="@{'/app/departments'}" class="main_button size_2" >Departments</a>
+</div>
+
+<!-- Выводим таблицу с отделами-->
+    <div class="table_div">
+        <table class="table">
+            <!-- Названия столбцов таблицы -->
+            <thead>
+            <tr>
+                <th style="width: 200px">Department</th>
+                <th style="width: 150px">Average Salary</th>
+                <th style="width: 60px"></th>
+
+            </tr>
+            </thead>
+            <tbody>
+            <!-- в цикле выводим все отделы в строках-->
+
+                <tr th:each="department : ${departmentList}">
+                    <!-- Выводим имя отдела-->
+                    <!--/*@thymesVar id="id" type=""*/-->
+                    <td th:text="${department.name}"/>
+                    <!-- Выводим среднюю зарплату. Она установлена как атрибут в запросе-->
+                    <td th:text="${department.getAverageSalary()}" />
+                    <td>
+                        <!--Ссылка, оформленная под кнопку, для получения всех списка всех сотрудников отдела-->
+                        <a  class="btn btn_type1" th:href="@{'/app/departments/' + ${department.id}}" th:text="STUFF"/>
+                    </td>
+
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+
+
+</body>
+</html>

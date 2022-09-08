@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<link href="/styles/css/employee-form.css" rel="stylesheet" type="text/css" />
+<head>
+    <title>Employee	Management App</title>
+</head>
+
+<!-- Заголовок-->
+<header>
+    <div class="header">
+        <a  th:href="@{'/app/main'}" class="header_text"> Employee	Management App </a>
+    </div>
+
+    <div class="header_2" sec:authorize="isAuthenticated()" >
+        <span th:inline="text" >Hello [[${#httpServletRequest.remoteUser}]]!</span>
+    </div>
+
+    <div class="header_3" sec:authorize="isAnonymous()">
+        <a  th:href="@{'/login'}"  class="header_text"> Sign in </a>
+    </div>
+
+    <div class="header_3" sec:authorize="isAuthenticated()">
+        <a  th:href="@{'/logout'}"  class="header_text"> Logout </a>
+    </div>
+
+    <div class="header_4" sec:authorize="hasRole('ADMIN')">
+        <a  th:href="@{'/admin'}" class="header_text_2"> Admin page</a>
+    </div>
+</header>
+
+<body class="body">
+<div class="user_form">
+    <div class="user_form_title">
+        <span th:if="${action == 'new'}">New Employee</span>
+        <span th:if="${action == 'edit'}">Edit employee</span>
+    </div>
+
+    <form action="#"
+          th:action="@{'/app/'+${action}}"
+          th:object="${employee}"
+          th:method="POST"
+          class="inputs">
+
+    <input type="hidden" name="id" th:field="*{id}" />
+
+    <!-- Поле department для ввода названия отдела. Если изменяем сущ. сотрудника,
+     то в поле выводится отдел, в котором он зачислен. Если создаем нового, то поле пустое -->
+    <fieldset class="form-group">
+        <label>Department</label>
+        <input type="text"
+               list="departments"
+               th:field="*{department.name}"
+               class="form-control"
+               name="department"
+               required="required">
+    </fieldset>
+
+    <!-- datalist для перечня существующих отделов. создано для удобства -->
+    <datalist id="departments">
+               <option th:each="dep : ${departments}" th:text="${dep.name}">
+    </datalist>
+
+    <!-- Поле name для ввода имени. Если изменяем сущ. сотрудника,
+     то в поле выводится его имя. Если создаем нового, то поле пустое -->
+    <fieldset class="form-group">
+        <label>Name</label>
+        <input type="text"
+               th:field="*{name}"
+               class="form-control"
+               name="name"
+               required="required">
+    </fieldset>
+
+<!--    Поле date для ввода даты рождения. Если изменяем сущ. сотрудника,-->
+<!--    то в поле выводится его дата рождения. Если создаем нового, то поле пустое &ndash;&gt;-->
+    <fieldset class="form-group">
+        <label>Date of birth</label>
+        <input type="date"
+               th:field="*{date}"
+               max="2004-01-01"
+               class="form-control"
+               name="date"
+               required="required">
+    </fieldset>
+
+<!--    Поле salary для ввода зарплаты. Если изменяем сущ. сотрудника,-->
+<!--    то в поле выводится его зарплата. Если создаем нового, то поле пустое &ndash;&gt;-->
+    <fieldset class="form-group">
+        <label>Salary</label>
+        <input type="text"
+               th:field="*{salary}"
+               class="form-control"
+               name="salary"
+               required="required">
+    </fieldset>
+
+    <!-- Кнопка для отправки формы -->
+    <div class="button_position">
+        <button type="submit" class="main_button">Save</button>
+    </div>
+    </form>
+</div>
+
+</body>
+</html>

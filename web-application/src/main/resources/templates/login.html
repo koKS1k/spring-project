@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<link href="/styles/css/login-page-style.css" rel="stylesheet" type="text/css" />
+
+<head>
+    <title>Login</title>
+</head>
+
+<header>
+    <div class="header">
+        <a  th:href="@{'/app/main'}" class="header_text"> Employee	Management App </a>
+    </div>
+
+    <div class="header_2" sec:authorize="isAuthenticated()" >
+        <span th:inline="text" >Hello [[${#httpServletRequest.remoteUser}]]!</span>
+    </div>
+
+    <div class="header_3" sec:authorize="isAnonymous()">
+        <a  th:href="@{'/login'}"  class="header_text"> Sign in </a>
+    </div>
+
+    <div class="header_3" sec:authorize="isAuthenticated()">
+        <a  th:href="@{'/logout'}"  class="header_text"> Logout </a>
+    </div>
+
+    <div class="header_4" sec:authorize="hasRole('ADMIN')">
+        <a  th:href="@{'/admin'}" class="header_text_2"> Admin page</a>
+    </div>
+</header>
+<body class="body">
+<div class="user_form">
+
+    <div class="user_form_title">
+        LOGIN
+    </div>
+
+
+    <form class="inputs"
+          th:action="@{/login}"
+          method="post">
+
+        <fieldset class="form-group">
+            <label>User Name</label>
+            <input type="text"
+                   class="form-control"
+                   name="username"
+                   id="username"
+                   placeholder="Username"
+                   required="required">
+        </fieldset>
+
+        <fieldset class="form-group">
+            <label>Password</label>
+            <input type="password"
+                   class="form-control"
+                   name="password"
+                   id="password"
+                   placeholder="Password"
+                   required="required">
+        </fieldset>
+
+        <input name="_csrf" type="hidden" value="e2ff173e-d108-44b9-997a-b46d8a870c06">
+
+        <div class="button_position">
+            <button type="submit" class="main_button">Sign In</button>
+        </div>
+
+        <a  th:href="@{'/registration'}"
+            class="main_button size_2">REGISTRATION</a>
+    </form>
+
+    <div class="error" th:if="${param.error}">
+        Invalid username and password.
+    </div>
+
+    <div class="error" th:if="${param.logout}">
+        You have been logged out.
+    </div>
+
+
+</div>
+</body>
+</html>

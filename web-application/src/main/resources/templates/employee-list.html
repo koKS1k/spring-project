@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<link href="/styles/css/main-page-style.css" rel="stylesheet" type="text/css" />
+<head>
+    <title>Employee	Management App</title>   <!-- Импорт CSS -->
+
+</head>
+
+<body class="body">
+<!--Заголовок-->
+<header>
+    <div class="header">
+        <a  th:href="@{'/app/main'}" class="header_text"> Employee	Management App </a>
+    </div>
+
+    <div class="header_2" sec:authorize="isAuthenticated()" >
+        <span th:inline="text" >Hello [[${#httpServletRequest.remoteUser}]]!</span>
+    </div>
+
+    <div class="header_3" sec:authorize="isAnonymous()">
+        <a  th:href="@{'/login'}"  class="header_text"> Sign in </a>
+    </div>
+
+    <div class="header_3" sec:authorize="isAuthenticated()">
+        <a  th:href="@{'/logout'}"  class="header_text"> Logout </a>
+    </div>
+
+    <div class="header_4" sec:authorize="hasRole('ADMIN')">
+        <a  th:href="@{'/admin'}" class="header_text_2"> Admin page</a>
+    </div>
+</header>
+
+<!-- Блок с двумя ссылками, оформленными как кнопки-->
+<div>
+    <!--Ссылка на получение списка всех сотрудников-->
+    <a  th:href="@{'/app/main'}" class="main_button size_1" >Employees</a>
+    <!--Ссылка на получение списка всех отделов-->
+    <a  th:href="@{'/app/departments'}" class="main_button size_2" >Departments</a>
+    <!--Ссылка на добавление нового сотрудника-->
+    <a  th:href="@{'/app/add'}" class="main_button size_3" >Add Employee</a>
+</div>
+
+<div class="text1"> date range</div>
+
+<div class="input_position1">
+    <!--Форма для отправки диапазона дат, для фильтрации сотрудников по дате рождения-->
+    <form class="inputs form_position_1"
+          th:action="@{'/app/filter/between'}"
+          method="post">
+
+        <!--Поле для первой даты в диапазоне (Дата "От").Если список уже
+         был отфильтрован, то поле заполнено предыдущим значением-->
+        <fieldset class="form-group">
+            <label>from</label>
+
+            <input type="date"
+                   th:value="${dateFrom}"
+                   class="form-control"
+                   name="dateFrom"
+                   required="required">
+        </fieldset>
+
+        <!--Поле для второй даты в диапазоне (Дата "До").Если список уже
+         был отфильтрован, то поле заполнено предыдущим значением-->
+        <fieldset class="form-group">
+            <label>to</label>
+            <input type="date"
+                   th:value="${dateTo}"
+                   class="form-control"
+                   name="dateTo"
+                   required="required">
+        </fieldset>
+
+        <!-- Кнопка для отправки формы -->
+        <div class="main_button2_position1">
+            <button type="submit" class="main_button_2">Filter</button>
+        </div>
+    </form>
+</div>
+
+<div class="text2"> date</div>
+<div class="input_position2">
+    <!--Форма для отправки конкретной даты, для фильтрации сотрудников по дате рождения-->
+    <form class="inputs form_position_1"
+          th:action="@{'/app/filter/exact'}"
+          method="post">
+
+        <!--Поле для даты по которой будет фильроваться список.Если список уже
+         был отфильтрован, то поле заполнено предыдущим значением-->
+        <fieldset class="form-group">
+            <label>date</label>
+            <input type="date"
+                   th:value="${exactDate}"
+                   class="form-control"
+                   name="exactDate"
+                   required="required">
+        </fieldset>
+
+        <!-- Кнопка для отправки формы -->
+        <div class="main_button2_position2">
+            <button type="submit" class="main_button_2">Filter</button>
+        </div>
+    </form>
+</div>
+
+
+<div class="table_div">
+    <table class="table">
+
+        <!-- Названия столбцов таблицы -->
+        <thead>
+        <tr>
+            <th style="width: 30px">ID</th>
+            <th style="width: 270px">Department</th>
+            <th style="width: 320px">Name</th>
+            <th style="width: 170px">Date of birth</th>
+            <th style="width: 80px">Salary</th>
+            <th style="width: 60px" sec:authorize="hasRole('ADMIN')"></th>
+            <th style="width: 80px" sec:authorize="hasRole('ADMIN')"></th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <!-- Перебираем все значения в списке, который в переменной "list" -->
+        <tr th:each="employee : ${employeeList}">
+            <!-- id сотрудника -->
+            <td th:text="${employee.id}"></td>
+            <!-- Отдел, в котором работает сотрудник -->
+            <td th:text="${employee.department.getName()}"></td>
+            <!-- Имя сотрудника -->
+            <td th:text="${employee.name}"></td>
+            <!-- Дата рождения сотрудника.-->
+            <td th:text="${employee.date}"></td>
+            <!-- Зарплата сотрудника -->
+            <td th:text="${employee.salary}"></td>
+
+                <!-- Ссылка ввиде кнопки, для редактирования данных сотрудника.-->
+                <td sec:authorize="hasRole('ADMIN')">
+                    <a  class="btn btn_type1" th:href="@{'/app/edit/' + ${employee.id}}" th:text="EDIT"></a>
+                </td>
+
+                <td sec:authorize="hasRole('ADMIN')">
+                    <!-- Ссылка ввиде кнопки, для удаления сотрудника.-->
+                    <a  class="btn btn_type2" th:href="@{'/app/delete/' + ${employee.id}}" th:text="DELETE"></a>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

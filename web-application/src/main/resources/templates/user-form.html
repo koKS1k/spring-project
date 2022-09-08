@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<link href="/styles/css/user-form.css" rel="stylesheet" type="text/css" />
+<head>
+    <title>Employee	Management App</title>
+</head>
+
+<!-- Заголовок-->
+<header>
+    <div class="header">
+        <a  th:href="@{'/app/main'}" class="header_text"> Employee	Management App </a>
+    </div>
+
+    <div class="header_2" sec:authorize="isAuthenticated()" >
+        <span th:inline="text" >Hello [[${#httpServletRequest.remoteUser}]]!</span>
+    </div>
+
+    <div class="header_3" sec:authorize="isAnonymous()">
+        <a  th:href="@{'/login'}"  class="header_text"> Sign in </a>
+    </div>
+
+    <div class="header_3" sec:authorize="isAuthenticated()">
+        <a  th:href="@{'/logout'}"  class="header_text"> Logout </a>
+    </div>
+
+    <div class="header_4" sec:authorize="hasRole('ADMIN')">
+        <a  th:href="@{'/admin'}" class="header_text_2"> Admin page</a>
+    </div>
+</header>
+
+<body class="body">
+<div class="user_form">
+    <div class="user_form_title">
+        <span th:if="${action == 'new'}">NEW USER</span>
+        <span th:if="${action == 'edit'}">EDIT USER</span>
+    </div>
+
+    <form action="#"
+          th:action="@{'/admin/'+${action}}"
+          th:object="${user}"
+          th:method="POST"
+          class="inputs">
+
+        <input type="hidden" name="id" th:field="*{id}" />
+
+
+        <fieldset class="form-group">
+            <label>Name</label>
+            <input type="text"
+                   th:field="*{username}"
+                   class="form-control"
+                   name="username"
+                   required="required">
+        </fieldset>
+
+
+        <fieldset class="form-group">
+            <label>Password</label>
+            <input type="text"
+                   th:field="*{password}"
+                   class="form-control"
+                   name="password"
+                   required="required">
+        </fieldset>
+
+        <fieldset class="form-group">
+            <label>Email</label>
+            <input type="text"
+                   th:field="*{email}"
+                   class="form-control"
+                   name="email"
+                   required="required">
+        </fieldset>
+
+
+        <fieldset class="checkbox">
+            <legend>Roles:
+                <input type="checkbox"
+                       name="roles"
+                       class="input_checkbox"
+                       th:each="role : ${allRoles}"
+                       th:text="${role.name}"
+                       th:value="${role.id}"
+                       th:field="*{roles}"/>
+            </legend>
+        </fieldset>
+
+        <div class="button_position">
+            <button type="submit" class="main_button">Save</button>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

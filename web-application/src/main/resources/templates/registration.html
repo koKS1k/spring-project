@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<link href="/styles/css/registration-form.css" rel="stylesheet" type="text/css" />
+<head>
+    <title>Registration</title>
+</head>
+<header>
+    <div class="header">
+        <a  th:href="@{'/app/main'}" class="header_text"> Employee	Management App </a>
+    </div>
+
+    <div class="header_2" sec:authorize="isAuthenticated()" >
+        <span th:inline="text" >Hello [[${#httpServletRequest.remoteUser}]]!</span>
+    </div>
+
+    <div class="header_3" sec:authorize="isAnonymous()">
+        <a  th:href="@{'/login'}"  class="header_text"> Sign in </a>
+    </div>
+
+    <div class="header_3" sec:authorize="isAuthenticated()">
+        <a  th:href="@{'/logout'}"  class="header_text"> Logout </a>
+    </div>
+
+    <div class="header_4" sec:authorize="hasRole('ADMIN')">
+        <a  th:href="@{'/admin'}" class="header_text_2"> Admin page</a>
+    </div>
+</header>
+<body class="body">
+<div class="user_form">
+
+    <div class="user_form_title">
+        Registration
+    </div>
+
+
+    <form action="#"
+          th:action="@{/registration}"
+          th:object="${userForm}"
+          th:method="POST"
+          class="inputs">
+
+        <fieldset class="form-group">
+            <label>Name</label>
+            <input type="text"
+                   th:field="*{username}"
+                   class="form-control"
+                   name="username">
+        </fieldset>
+
+        <div class="error_field1"
+             th:if="${#fields.hasErrors('username')}"
+             th:errors="*{username}">
+            Error1
+        </div>
+
+        <fieldset class="form-group">
+            <label>Password</label>
+            <input type="password"
+                   th:field="*{password}"
+                   class="form-control"
+                   name="password">
+        </fieldset>
+
+        <div class="error_field1"
+             th:if="${#fields.hasErrors('password')}"
+             th:errors="*{password}">
+        Error2
+        </div>
+
+        <fieldset class="form-group">
+            <label>Confirm</label>
+            <input type="password"
+                   th:field="*{passwordConfirm}"
+                   class="form-control"
+                   name="passwordConfirm">
+        </fieldset>
+
+
+        <fieldset class="form-group">
+            <label>Email</label>
+            <input type="text"
+                   th:field="*{email}"
+                   class="form-control"
+                   name="email">
+        </fieldset>
+
+        <div class="error_field1"
+             th:if="${#fields.hasErrors('email')}"
+             th:errors="*{email}">
+            Error3
+        </div>
+
+        <div class="button_position">
+            <button type="submit" class="main_button">Register</button>
+        </div>
+    </form>
+
+    <div class="error" th:if="${passwordError}">
+        Invalid username and password.
+    </div>
+
+    <div class="error" th:if="${usernameError}">
+        You have been logged out.
+    </div>
+</div>
+</body>
+</html>

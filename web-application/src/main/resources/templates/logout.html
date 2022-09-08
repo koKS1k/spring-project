@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<link href="/styles/css/logout-page-style.css" rel="stylesheet" type="text/css" />
+<head>
+    <title>Logout</title>
+</head>
+
+<header>
+    <div class="header">
+        <p class="header_text" style="margin-left:20px"> Employee	Management App </p>
+    </div>
+
+    <div class="header_2" sec:authorize="isAuthenticated()" >
+        <span th:inline="text" >Hello [[${#httpServletRequest.remoteUser}]]!</span>
+    </div>
+
+    <div class="header_3" sec:authorize="isAnonymous()">
+        <a  th:href="@{'/login'}"  class="header_text"> Sign in </a>
+    </div>
+
+    <div class="header_3" sec:authorize="isAuthenticated()">
+        <a  th:href="@{'/logout'}"  class="header_text"> Logout </a>
+    </div>
+
+    <div class="header_4" sec:authorize="hasRole('ADMIN')">
+        <a  th:href="@{'/admin'}" class="header_text_2"> Admin page</a>
+    </div>
+</header>
+
+<body class="body">
+<div class="error_form">
+
+    <div class="error_title">
+        LOGOUT
+    </div>
+
+    <div class="text1">
+        Are you sure you want to log out?
+    </div>
+
+    <a  href="javascript:history.back()"
+        class="main_button size_1"> NO </a>
+
+
+    <form th:action="@{/logout}" method="post">
+        <button type="submit" class="main_button size_2" >YES</button>
+        <input name="_csrf" type="hidden" value="e2ff173e-d108-44b9-997a-b46d8a870c06">
+    </form>
+
+
+</div>
+
+</body>
+</html>

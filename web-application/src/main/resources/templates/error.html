@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<link href="/styles/css/error.css" rel="stylesheet" type="text/css" />
+<head>
+    <title>Error</title>
+</head>
+<header>
+    <div class="header">
+        <p class="header_text" style="margin-left:20px"> Employee	Management App </p>
+    </div>
+</header>
+<body class="body">
+<div class="error_form">
+
+    <div class="error_title">
+        <span th:text="'Error ' + ${error} + '!'"></span>
+    </div>
+
+    <div class="text1">
+        Uh Oh! SOMETHING WRONG!<br>
+        An error has occured. Our team 0f 5000000 engineers is working on it.
+    </div>
+
+
+    <a  th:href="@{'/app/main'}"
+        class="main_button size_1"> MAIN PAGE! </a>
+</div>
+
+</body>
+</html>
